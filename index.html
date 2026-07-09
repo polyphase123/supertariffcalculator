@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Philippine Power System Cost & Tariff Simulator</title>
+    
+    <!-- Premium Stylesheet Link -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- ChartJS library CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Dashboard Header -->
+        <header>
+            <div class="header-content">
+                <div class="header-title">
+                    <h1>Power System Cost & Tariff Simulator <span class="version-badge">v3.5.0-fx</span></h1>
+                    <div class="header-subtitle">Advanced Multi-Scenario Decision-Support Framework for Philippine Grid Economics</div>
+                    <div class="developer-tag">Designed & Developed by: <span>Engr. Franz Xyrlo Tobias, PEE</span></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <div class="dashboard-grid">
+            
+            <!-- Left Sidebar Controls -->
+            <aside class="space-y-6">
+                
+                <!-- Section 1: Scenario Presets -->
+                <div class="card">
+                    <div class="section-title" data-accordion="presets">
+                        <span>Scenario Presets</span>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label for="baselineSelect">Baseline Year Dataset</label>
+                            <select id="baselineSelect" class="input-field">
+                                <option value="as_of_april_2025" selected>2025 (Actual as of April)</option>
+                                <option value="projected_2024">2024 (Projected)</option>
+                                <option value="baseline_2022">2022 (Actual)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gridSelect">Target Grid Connection</label>
+                            <select id="gridSelect" class="input-field">
+                                <option value="national" selected>National Grid (PH)</option>
+                                <option value="luzon">Luzon Grid</option>
+                                <option value="visayas">Visayas Grid</option>
+                                <option value="mindanao">Mindanao Grid</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="scenarioSelect">Macro Scenario Presets</label>
+                            <select id="scenarioSelect" class="input-field">
+                                <option value="custom" selected>Custom Scenario Builder</option>
+                                <option value="committed_projects">Committed Power Plants (DOE)</option>
+                                <option value="gea1_to_3_awarded">GEA 1-3 Awarded Projects</option>
+                                <option value="gea4_to_5_target">GEA 4-5 Clean Energy Targets</option>
+                                <option value="gea1_to_5_total">GEA 1-5 Cumulative Capacity</option>
+                                <option value="gea1_to_5_50_percent">GEA 1-5 (50% Operational)</option>
+                                <option value="pep_ref">PEP 2050 Reference Scenario (REF)</option>
+                                <option value="pep_ces1">PEP 2050 CES (19GW OSW)</option>
+                                <option value="pep_ces2">PEP 2050 CES (50GW OSW)</option>
+                                <option value="nuclear_bnpp">Revive Bataan Nuclear (621 MW)</option>
+                                <option value="nuclear_2032">Nuclear Target (1.2GW by 2032)</option>
+                                <option value="nuclear_2050">Nuclear Target (4.8GW by 2050)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Custom Generator Builder -->
+                <div class="card">
+                    <div class="section-title" data-accordion="builder">
+                        <span>Custom Plant Builder</span>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label for="plantType">Generation Technology</label>
+                            <select id="plantType" class="input-field">
+                                <option value="Coal">USC Coal</option>
+                                <option value="NaturalGas">Natural Gas (CCGT)</option>
+                                <option value="LNG">Liquefied Natural Gas (LNG)</option>
+                                <option value="Hydro">Hydroelectric</option>
+                                <option value="Geothermal">Geothermal</option>
+                                <option value="Solar">Solar PV (Utility)</option>
+                                <option value="Wind">Onshore Wind</option>
+                                <option value="OffshoreWind">Offshore Wind</option>
+                                <option value="Biomass">Biomass</option>
+                                <option value="Oil-based">Diesel Engine</option>
+                                <option value="Bunker">Bunker / HFO</option>
+                                <option value="SolarBESS">Solar + Battery Storage</option>
+                                <option value="Nuclear">Nuclear Reactor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="specificModel">Specific Turbine/Turbine Unit</label>
+                            <select id="specificModel" class="input-field">
+                                <!-- Dynamically populated by app.js -->
+                            </select>
+                        </div>
+                        <div class="form-group" id="unitCountWrapper">
+                            <label for="unitCount">Number of Generator Units</label>
+                            <input type="number" id="unitCount" class="input-field" value="1" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="capacity">Combined Capacity (MW)</label>
+                            <input type="number" id="capacity" class="input-field" readonly>
+                            <div id="capacityHelper" class="developer-tag"></div>
+                        </div>
+                        <button id="addPlantBtn" class="btn btn-primary">Add Plant to Scenario</button>
+                        
+                        <div class="scenario-additions-list" id="scenarioList">
+                            <!-- Populated dynamic scenario additions -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Financial & Technical Assumptions -->
+                <div class="card">
+                    <div class="section-title" data-accordion="assumptions">
+                        <span>Assumptions Panel</span>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                    <div class="section-content">
+                        <div class="form-group">
+                            <label for="demandScenario">Electricity Demand Growth</label>
+                            <select id="demandScenario" class="input-field">
+                                <option value="4.5">Conservative (4.5%/year)</option>
+                                <option value="5.5" selected>Moderate Growth (5.5%/year)</option>
+                                <option value="6.5">Ambitious Growth (6.5%/year)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reCostReduction">Annual RE Cost Decline (%)</label>
+                            <input type="number" id="reCostReduction" class="input-field" value="2.0" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label for="gridUpgrade">Transmission Plan Grid Upgrade</label>
+                            <select id="gridUpgrade" class="input-field">
+                                <option value="current">Current Grid Infrastructure</option>
+                                <option value="upgraded" selected>Upgraded Grid (TDP 2040)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gridReinforcementCost">Base Grid Reinforcement (₱/kWh)</label>
+                            <input type="number" id="gridReinforcementCost" class="input-field" value="0.10" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="vreCurtailmentRisk">VRE Curtailment Risk (%)</label>
+                            <input type="number" id="vreCurtailmentRisk" class="input-field" value="5" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="vreAncillaryCost">VRE Ancillary Factor (₱/kWh per % VRE)</label>
+                            <input type="number" id="vreAncillaryCost" class="input-field" value="0.0015" step="0.0001">
+                        </div>
+                        
+                        <div class="form-group border-t pt-3 mt-1">
+                            <label class="flex items-center gap-2" style="font-weight: 700; color: var(--primary); cursor: pointer;">
+                                <input type="checkbox" id="overrideWesm" style="width: auto; margin-right: 0.25rem;"> Override WESM Price
+                            </label>
+                        </div>
+                        <div class="form-group" id="wesmOverrideWrapper" style="display: none; margin-top: 0.25rem;">
+                            <label for="manualWesmRate">Manual WESM Rate: <span id="manualWesmVal" class="slider-value">₱6.00/kWh</span></label>
+                            <input type="range" id="manualWesmRate" min="0" max="15" step="0.10" value="6.00">
+                        </div>
+                        
+                        <div class="btn-group">
+                            <button id="pinScenarioBtn" class="btn btn-secondary">Pin Scenario</button>
+                            <button id="resetBtn" class="btn btn-danger">Reset Fields</button>
+                        </div>
+                    </div>
+                </div>
+
+            </aside>
+
+            <!-- Right Workspace Pane: Metrics, Visualization, and Tabs -->
+            <main>
+                <!-- Key KPI Metrics Row -->
+                <div class="metrics-row">
+                    <div class="metric-card primary">
+                        <span class="metric-title">Blended Tariff</span>
+                        <div id="totalSystemCost" class="metric-value">₱0.00/kWh</div>
+                    </div>
+                    <div class="metric-card danger">
+                        <span class="metric-title">Tariff Change Impact</span>
+                        <div id="tariffImpact" class="metric-value">0.00%</div>
+                    </div>
+                    <div class="metric-card success">
+                        <span class="metric-title">Renewable Energy Share</span>
+                        <div id="reShare" class="metric-value">0.0%</div>
+                    </div>
+                    <div class="metric-card success">
+                        <span class="metric-title">Additions LCOE Impact</span>
+                        <div id="additionsLcoe" class="metric-value">₱0.00/kWh</div>
+                    </div>
+                    <div class="metric-card warning">
+                        <span class="metric-title">WESM Marginal Spot Rate</span>
+                        <div id="marginalRate" class="metric-value">₱0.00/kWh</div>
+                    </div>
+                    <div class="metric-card info">
+                        <span class="metric-title">Fuel Import Cost</span>
+                        <div id="importCost" class="metric-value">₱0.00</div>
+                    </div>
+                    <div class="metric-card warning">
+                        <span class="metric-title">System Inertia</span>
+                        <div id="systemInertia" class="metric-value">0.0%</div>
+                    </div>
+                    <div class="metric-card info">
+                        <span class="metric-title">Estimated Jobs Created</span>
+                        <div id="jobsCreated" class="metric-value">0</div>
+                    </div>
+                    <div class="metric-card primary">
+                        <span class="metric-title">Land Resource Use</span>
+                        <div id="landUse" class="metric-value">0 ha</div>
+                    </div>
+                    <div class="metric-card warning">
+                        <span class="metric-title">Grid Resiliency Index</span>
+                        <div id="resiliencyScore" class="metric-value">0.0/10</div>
+                    </div>
+                    <div class="metric-card primary">
+                        <span class="metric-title">Annual Grid CO2 Footprint</span>
+                        <div id="totalEmissions" class="metric-value">0 tCO₂</div>
+                    </div>
+                </div>
+
+                <!-- Modular Tab Environment -->
+                <div class="card tabs-container">
+                    <div class="tabs-nav">
+                        <button class="tab-btn active" data-tab="charts">Visualizations</button>
+                        <button class="tab-btn" data-tab="spug">SPUG Hybridization</button>
+                        <button class="tab-btn" data-tab="dispatch">WESM Merit Dispatch</button>
+                        <button class="tab-btn" data-tab="stability">Grid Stability (N-1)</button>
+                        <button class="tab-btn" data-tab="compare">Compare Scenarios</button>
+                        <button class="tab-btn" data-tab="finance">Project Finance</button>
+                        <button class="tab-btn" data-tab="fit">Feed-in Tariff (FIT)</button>
+                        <button class="tab-btn" data-tab="gea">GEA Summary</button>
+                        <button class="tab-btn" data-tab="socio">Consumer Tariff Impact</button>
+                        <button class="tab-btn" data-tab="sensitivity">Sensitivity & Reporting</button>
+                    </div>
+
+                    <!-- Visualizations Pane -->
+                    <div class="tab-pane active" id="charts">
+                        <div class="charts-grid">
+                            <div class="chart-wrapper">
+                                <div class="chart-title">System Generation Capacity Split (MW)</div>
+                                <div class="chart-container" style="position: relative; width: 100%; height: 260px;">
+                                    <canvas id="mixChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-wrapper">
+                                <div class="chart-title">Annual CO2 Footprint by Fuel Source (Tons)</div>
+                                <div class="chart-container" style="position: relative; width: 100%; height: 260px;">
+                                    <canvas id="emissionsChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Placeholder Panes (rendered by app.js router) -->
+                    <div class="tab-pane" id="spug"></div>
+                    <div class="tab-pane" id="dispatch"></div>
+                    <div class="tab-pane" id="stability"></div>
+                    <div class="tab-pane" id="compare"></div>
+                    <div class="tab-pane" id="finance"></div>
+                    <div class="tab-pane" id="fit"></div>
+                    <div class="tab-pane" id="gea"></div>
+                    <div class="tab-pane" id="socio"></div>
+                    <div class="tab-pane" id="sensitivity"></div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal for Text Reports -->
+    <div id="reportModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Simulation Report Summary</h2>
+                <button id="closeModalBtn" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <textarea id="reportText" readonly></textarea>
+            </div>
+            <div class="modal-header" style="margin-top: 1.5rem; justify-content: flex-end;">
+                <button id="copyReportBtn" class="btn btn-primary" style="width: auto;">Copy Report to Clipboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core App Logic Link -->
+    <script src="app.js"></script>
+</body>
+</html>
