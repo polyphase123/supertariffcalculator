@@ -106,6 +106,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const baselineGrids = {
+        baseline_2026: {
+            national: [ { tech: 'Coal', capacity: 13706.0 }, { tech: 'Oil-based', capacity: 3471.04 }, { tech: 'NaturalGas', capacity: 4612.0 }, { tech: 'Biomass', capacity: 811.88 }, { tech: 'Geothermal', capacity: 1992.645 }, { tech: 'Solar', capacity: 9797.003 }, { tech: 'Hydro', capacity: 3931.61 }, { tech: 'Wind', capacity: 1626.499 } ],
+            luzon: [ { tech: 'Coal', capacity: 10092.0 }, { tech: 'Oil-based', capacity: 2065.04 }, { tech: 'NaturalGas', capacity: 4611.0 }, { tech: 'Biomass', capacity: 217.88 }, { tech: 'Geothermal', capacity: 900.0 }, { tech: 'Solar', capacity: 8149.249 }, { tech: 'Hydro', capacity: 2590.81 }, { tech: 'Wind', capacity: 1066.939 } ],
+            visayas: [ { tech: 'Coal', capacity: 1346.0 }, { tech: 'Oil-based', capacity: 517.0 }, { tech: 'NaturalGas', capacity: 1.0 }, { tech: 'Biomass', capacity: 472.0 }, { tech: 'Geothermal', capacity: 980.645 }, { tech: 'Solar', capacity: 1205.574 }, { tech: 'Hydro', capacity: 83.10 }, { tech: 'Wind', capacity: 559.56 } ],
+            mindanao: [ { tech: 'Coal', capacity: 2268.0 }, { tech: 'Oil-based', capacity: 889.0 }, { tech: 'NaturalGas', capacity: 0.0 }, { tech: 'Biomass', capacity: 122.0 }, { tech: 'Geothermal', capacity: 112.0 }, { tech: 'Solar', capacity: 442.18 }, { tech: 'Hydro', capacity: 1257.70 }, { tech: 'Wind', capacity: 0.0 } ]
+        },
         as_of_april_2025: {
             national: [ { tech: 'Coal', capacity: 13006 }, { tech: 'Oil-based', capacity: 3404 }, { tech: 'NaturalGas', capacity: 4612 }, { tech: 'Biomass', capacity: 779 }, { tech: 'Geothermal', capacity: 1987 }, { tech: 'Solar', capacity: 3126 }, { tech: 'Hydro', capacity: 3844 }, { tech: 'Wind', capacity: 427 } ],
             luzon: [ { tech: 'Coal', capacity: 9392 }, { tech: 'Oil-based', capacity: 2054 }, { tech: 'NaturalGas', capacity: 4611 }, { tech: 'Biomass', capacity: 215 }, { tech: 'Geothermal', capacity: 900 }, { tech: 'Solar', capacity: 2503 }, { tech: 'Hydro', capacity: 2565 }, { tech: 'Wind', capacity: 337 } ],
@@ -128,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const preDefinedScenarios = {
         'custom': [],
-        'committed_projects': [ { tech: 'Coal', capacity: 2305 }, { tech: 'NaturalGas', capacity: 6070 }, { tech: 'Oil-based', capacity: 87 }, { tech: 'Geothermal', capacity: 122 }, { tech: 'Hydro', capacity: 271 }, { tech: 'Solar', capacity: 3391 }, { tech: 'Wind', capacity: 273 }, { tech: 'Biomass', capacity: 81 } ],
+        'committed_projects': [ { tech: 'Coal', capacity: 3074.0 }, { tech: 'NaturalGas', capacity: 1100.0 }, { tech: 'Oil-based', capacity: 75.54 }, { tech: 'Geothermal', capacity: 5.645 }, { tech: 'Hydro', capacity: 833.56 }, { tech: 'Solar', capacity: 16337.259 }, { tech: 'Wind', capacity: 5377.234 }, { tech: 'Biomass', capacity: 38.88 } ],
         'gea1_to_3_awarded': [ { tech: 'Solar', capacity: 2268.752 }, { tech: 'Wind', capacity: 1836.384 }, { tech: 'Hydro', capacity: 6749.15 }, { tech: 'Biomass', capacity: 3.4 }, { tech: 'Geothermal', capacity: 30.887 } ],
         'gea1_only': [ { tech: 'Solar', capacity: 260.38 }, { tech: 'Wind', capacity: 374.0 }, { tech: 'Hydro', capacity: 99.15 }, { tech: 'Biomass', capacity: 3.4 } ],
         'gea2_only': [ { tech: 'Solar', capacity: 2008.372 }, { tech: 'Wind', capacity: 1462.384 } ],
